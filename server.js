@@ -2,8 +2,6 @@ var express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
 var typeDefs = gql`
-  # plane fragments
-
   type Planet {
     # giant, terrestrial, small
     name: String!
