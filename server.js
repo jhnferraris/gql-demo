@@ -1,5 +1,7 @@
 var express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
+const { galaxies, planets, systems } = require('./models');
+const _ = require('lodash');
 
 var typeDefs = gql`
   type Planet {
@@ -21,29 +23,42 @@ var typeDefs = gql`
 
   type Query {
     galaxy(id: ID): Galaxy
-    andromeda: Galaxy
-    hello: String
+    galaxies: [Galaxy]!
   }
 `;
 
 var resolvers = {
   Query: {
-    hello: () => 'Hello world!',
     galaxy: (root, args, context) => {
-      return {
-        name: 'Milky Way',
-        systems: [
-          {
-            name: 'Solar',
-            planets: [
-              {
-                name: 'Earth',
-                classification: 'Terrestrial'
-              }
-            ]
-          }
-        ]
-      };
+      const { id: galaxyId } = args;
+      const galaxy = _.clone(
+        galaxies.find(galaxy => {
+          return galaxy.id === parseInt(galaxyId);
+        })
+      );
+      galaxy.systems = galaxy.systems.map(systemId => {
+        const systemObject = systems.find(system => {
+          return system.id === systemId;
+        });
+
+        const planetItems = systemObject.planets.map(planetId => {
+          const planetObject = planets.find(planet => {
+            return planet.id === planetId;
+          });
+
+          return planetObject;
+        });
+
+        return {
+          name: systemObject.name,
+          planets: planetItems
+        };
+      });
+
+      return galaxy;
+    },
+    galaxies: () => {
+      return [];
     }
   }
 };
