@@ -23,7 +23,11 @@ var typeDefs = gql`
 
   type Query {
     galaxy(id: ID): Galaxy
-    galaxies: [Galaxy]!
+    galaxies: [Galaxy]
+  }
+
+  type Mutation {
+    addGalaxy(name: String!): Galaxy
   }
 `;
 
@@ -58,7 +62,21 @@ var resolvers = {
       return galaxy;
     },
     galaxies: () => {
-      return [];
+      return galaxies;
+    }
+  },
+  Mutation: {
+    addGalaxy: (root, args, context) => {
+      const lastGalaxy = _.clone(galaxies[galaxies.length]);
+      const newGalaxy = {
+        id: lastGalaxy + 1,
+        name: args.name,
+        systems: []
+      };
+
+      galaxies.push(newGalaxy);
+
+      return newGalaxy;
     }
   }
 };
