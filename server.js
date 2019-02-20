@@ -62,7 +62,34 @@ var resolvers = {
       return galaxy;
     },
     galaxies: () => {
-      return galaxies;
+      const clonedGalaxies = _.cloneDeep(galaxies);
+      const responseGalaxies = clonedGalaxies.map(galaxy => {
+        const galaxyResponse = {
+          name: galaxy.name
+        };
+
+        galaxyResponse.systems = galaxy.systems.map(systemId => {
+          const systemObject = systems.find(system => {
+            return system.id === systemId;
+          });
+
+          const planetItems = systemObject.planets.map(planetId => {
+            const planetObject = planets.find(planet => {
+              return planet.id === planetId;
+            });
+
+            return planetObject;
+          });
+
+          return {
+            name: systemObject.name,
+            planets: planetItems
+          };
+        });
+
+        return galaxyResponse;
+      });
+      return responseGalaxies;
     }
   },
   Mutation: {
