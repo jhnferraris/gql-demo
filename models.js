@@ -8,13 +8,18 @@ const planets = [
     id: 2,
     name: 'Venus',
     classification: 'terrestrial'
+  },
+  {
+    id: 3,
+    name: 'Pluto',
+    classification: 'small'
   }
 ];
 const systems = [
   {
     id: 1,
     name: 'Solar',
-    planets: [1, 2]
+    planets: [1, 2, 3]
   }
 ];
 const galaxies = [

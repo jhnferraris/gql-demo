@@ -13,7 +13,7 @@ var typeDefs = gql`
 
   type System {
     name: String!
-    planets: [Planet!]
+    planets(classification: String): [Planet!]
   }
 
   type Galaxy {
@@ -32,6 +32,11 @@ var typeDefs = gql`
 `;
 
 var resolvers = {
+  System: {
+    planets: (root, args, context) => {
+      return planets.filter(planet => planet.classification === args.classification);
+    }
+  },
   Query: {
     galaxy: (root, args, context) => {
       const { id: galaxyId } = args;
